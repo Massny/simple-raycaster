@@ -20,9 +20,9 @@ interface IGameData{
   canvas: HTMLCanvasElement;
   canvasContext: CanvasRenderingContext2D;
   map: number[][];
-  textures: textureData[];
+  textures: null | textureData[];
   renderData: {
-    buffer: null | number[]
+    buffer: null | Uint8ClampedArray
     imageData: null | ImageData
   }
 }

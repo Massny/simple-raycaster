@@ -1,3 +1,4 @@
+import IGameData from "./types/IGameData"
 import textureData from "./types/ITextureUtils"
 
 const textures : textureData[] = [ 
@@ -28,18 +29,6 @@ const textures : textureData[] = [
   }
 ]
 
-const initializeTextures = async (textureArray: textureData[]) => {
-  for(let i in textureArray){
-    const imageElement = document.createElement('img')
-    imageElement.src = `./textures/${textureArray[i].name}.png`
-    imageElement.style.display = 'none'
-    await imageElement.decode()
-    document.body.appendChild(imageElement);
-    textureArray[i].colourArray = getTextureData(imageElement)
-    textureArray[i].size = imageElement.naturalHeight
-  }
-}
-
 const getTextureData = (image: HTMLImageElement) => {
   const canvas = new OffscreenCanvas(image.naturalWidth, image.naturalHeight)
 
@@ -47,14 +36,21 @@ const getTextureData = (image: HTMLImageElement) => {
   if(!context) throw new Error('Failed to create canvas context, when initilizing textures');
 
   context.drawImage(image, 0, 0, image.naturalWidth, image.naturalHeight);
-  const textureData = context?.getImageData(0,0,image.naturalWidth, image.naturalHeight).data
-  const colourArray = []
+  return context.getImageData(0,0,image.naturalWidth, image.naturalHeight).data
 
-  for(let i=0;i<textureData?.length;i+=4){
-    colourArray.push([textureData[i], textureData[i+1], textureData[i+2]])
-  }
-
-  return colourArray
 }
 
-export {textures, initializeTextures}
+const initializeTextures = async (data: IGameData) => {
+  for(let i in textures){
+    const imageElement = document.createElement('img')
+    imageElement.src = `./textures/${textures[i].name}.png`
+    imageElement.style.display = 'none'
+    await imageElement.decode()
+    document.body.appendChild(imageElement);
+    textures[i].colourArray = getTextureData(imageElement)
+    textures[i].size = imageElement.naturalHeight
+    data.textures = textures
+  }
+}
+
+export {initializeTextures}

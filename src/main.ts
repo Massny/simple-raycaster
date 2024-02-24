@@ -3,7 +3,8 @@ import initializeCanvas from './initializeCanvas';
 import { degreesToRadians } from './util';
 import rayCaster from './rayCaster';
 import initializeMovement from './InitializeMovement';
-import { textures, initializeTextures } from './textureUtils';
+import { initializeTextures } from './textureUtils';
+import { initializeBuffer, renderBuffer } from './renderUtils';
 
 const gameWidth = 640;
 const gameHeight = 480;
@@ -37,8 +38,7 @@ const map = [
   [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 ]
 
-const textureArray = textures
-initializeTextures(textureArray)
+
 
 const data = {
   screenWidth: gameWidth,
@@ -60,22 +60,25 @@ const data = {
     x: 0,
     y: (Math.tan(degreesToRadians(66/2)))
   },
-  frameRate: 1000/30,
+  frameRate: 1000/60,
   canvas: canvas,
   canvasContext: canvas.getContext('2d') as CanvasRenderingContext2D,
   map: map,
-  textures: textures,
+  textures: null,
   renderData:{
     imageData: null,
     buffer: null,
   }
 }
 
-
+initializeTextures(data)
+initializeBuffer(data)
 initializeMovement(data)
+
 setInterval(() => {
   data.canvasContext.clearRect(0, 0, data.screenWidth, data.screenHeight);
   rayCaster(data)
+  renderBuffer(data)
   
 }, data.frameRate)
 
