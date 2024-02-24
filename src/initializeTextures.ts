@@ -53,4 +53,4 @@ const initializeTextures = async (data: IGameData) => {
   }
 }
 
-export {initializeTextures}
+export default initializeTextures

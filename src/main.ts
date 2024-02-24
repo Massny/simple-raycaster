@@ -3,7 +3,7 @@ import initializeCanvas from './initializeCanvas';
 import { degreesToRadians } from './util';
 import rayCaster from './rayCaster';
 import initializeMovement from './InitializeMovement';
-import { initializeTextures } from './textureUtils';
+import initializeTextures from './initializeTextures';
 import { initializeBuffer, renderBuffer } from './renderUtils';
 
 const gameWidth = 640;
@@ -71,16 +71,19 @@ const data = {
   }
 }
 
-initializeTextures(data)
-initializeBuffer(data)
-initializeMovement(data)
-
-setInterval(() => {
-  data.canvasContext.clearRect(0, 0, data.screenWidth, data.screenHeight);
-  rayCaster(data)
-  renderBuffer(data)
+const start = async () => {
+  await initializeTextures(data)
+  initializeBuffer(data)
+  initializeMovement(data)
   
-}, data.frameRate)
+  setInterval(() => {
+    data.canvasContext.clearRect(0, 0, data.screenWidth, data.screenHeight);
+    rayCaster(data)
+    renderBuffer(data)
+    
+  }, data.frameRate)
+}
 
+start()
 
 

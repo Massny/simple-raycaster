@@ -1,5 +1,5 @@
 import IGameData from "./types/IGameData"
-import { drawLine } from "./renderUtils"
+import { drawLine, drawTexture } from "./renderUtils"
 
 const rayCaster = (data: IGameData) => {
   const {screenWidth, screenHeight, position, direction, plane, map, textures} = data
@@ -120,43 +120,13 @@ const rayCaster = (data: IGameData) => {
     
       
     // TEXTURE RENDERING LOGIC
-    // Make it into a separate function later
-
     let wallX = wallSide == 0 ? position.y + wallDistance * rayDirection.y : position.x + wallDistance * rayDirection.x
     wallX -= Math.floor(wallX)
 
     const textureIndex = map[gridPosition.x][gridPosition.y] -1
-    if(!textures) return //Add error throwing and handling
-    if(textureIndex >= textures.length || textureIndex < 0 || !textures[textureIndex].size || !textures[textureIndex].colourArray ){
-      const colour = [51, 204, 51,255]
-      wallSide == 1 ? drawLine(data, {x: x, y: upperEdge-1}, {x: x, y: lowerEdge+1}, colour.map((value) => (value >> 1))) : drawLine(data, {x: x, y: upperEdge+1}, {x: x, y: lowerEdge}, colour)
-    } else {
-      const texture = textures[textureIndex]
-      if(!texture.size || !texture.colourArray) return
-
-      const column = Math.floor(wallX*texture.size)
-      let currentUpper = upperEdgeWithOverflow-1
-      const step = (lowerEdgeWithOverflow-upperEdgeWithOverflow)/texture.size
-      let beginningStepOffset = 0
-      if(currentUpper < 0){
-        beginningStepOffset = Math.round((-currentUpper/step-1))
-        currentUpper+= beginningStepOffset*step
-      } 
-      for(let i = beginningStepOffset;i<texture.size;i++){
-        if(currentUpper > screenHeight) break
-        const index = (4*(i*texture.size + column)) 
-        const currentColour = [texture.colourArray[index], texture.colourArray[index+1], texture.colourArray[index+2], texture.colourArray[index+3]]
-        if(wallSide == 1) currentColour.forEach((value,i) => {currentColour[i] = value >> 1})
-        // TODO Implement a proper overflow handling
-        drawLine(data, {x: x, y: Math.floor(currentUpper) > 0 ? Math.floor(currentUpper) : 0}, {x:x, y: Math.floor(currentUpper + step + (i>=7 ? 1: 0)) < screenHeight ? Math.floor(currentUpper + step + (i>=7 ? 1: 0)) : screenHeight}, currentColour)
-        currentUpper += step
-      }
-    }
-
-
 
     drawLine(data, {x: x, y: 0}, {x: x, y: upperEdge}, [0,0,255,255])
-    
+    drawTexture(data, textureIndex, x, wallX, upperEdgeWithOverflow, lowerEdgeWithOverflow, wallSide)
     drawLine(data, {x: x, y: lowerEdge}, {x: x, y: screenHeight-1}, [128, 128, 128,255])
   }
 }
