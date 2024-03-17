@@ -1,6 +1,6 @@
 interface textureData{
   name: string,
-  colourArray: null | number[][],
+  colourArray: null | Uint8ClampedArray,
   size: null | number
 }
 

@@ -1,8 +1,8 @@
 import IGameData from "./types/IGameData"
-import { drawLine } from "./util"
+import { drawLine, drawTexture } from "./renderUtils"
 
 const rayCaster = (data: IGameData) => {
-  const {screenWidth, screenHeight, position, direction, plane, canvasContext, map, textures} = data
+  const {screenWidth, screenHeight, position, direction, plane, map, textures} = data
 
   // Iterate through all "vertical stripes" (that is, all pixels of screenWidth)
   for(let x = 0; x <data.screenWidth; x++){
@@ -119,31 +119,15 @@ const rayCaster = (data: IGameData) => {
       lowerEdge = screenHeight  
     
       
+    // TEXTURE RENDERING LOGIC
     let wallX = wallSide == 0 ? position.y + wallDistance * rayDirection.y : position.x + wallDistance * rayDirection.x
     wallX -= Math.floor(wallX)
 
     const textureIndex = map[gridPosition.x][gridPosition.y] -1
-    if(textureIndex >= textures.length || textureIndex < 0 || !textures[textureIndex].size || !textures[textureIndex].colourArray ){
-      wallSide == 0 ? drawLine({x: x, y: upperEdge-1}, {x: x, y: lowerEdge+1}, '#33cc33', canvasContext) : drawLine({x: x, y: upperEdge+1}, {x: x, y: lowerEdge}, '#009900', canvasContext)
-    } else {
-      const texture = textures[textureIndex]
-      if(!texture.size || !texture.colourArray) return
 
-      const column = Math.floor(wallX*texture.size)
-      let currentUpper = upperEdgeWithOverflow-1
-      const step = (lowerEdgeWithOverflow-upperEdgeWithOverflow)/texture.size
-      for(let i = 0;i<texture.size;i++){
-        const currentColour = wallSide == 1 ? texture.colourArray[i*texture.size + column].map((colour) => (colour >> 1)) : texture.colourArray[i*texture.size + column]
-        drawLine({x: x, y: Math.floor(currentUpper)}, {x:x, y: Math.floor(currentUpper + step + (i==7 ? 1: 0))}, `rgb(${currentColour[0]}, ${currentColour[1]}, ${currentColour[2]})`, canvasContext)
-        currentUpper += step
-      }
-    }
-
-
-
-    drawLine({x: x, y: 0}, {x: x, y: upperEdge}, 'blue', canvasContext)
-    
-    drawLine({x: x, y: lowerEdge}, {x: x, y: screenHeight-1}, 'gray', canvasContext)
+    drawLine(data, {x: x, y: 0}, {x: x, y: upperEdge}, [0,0,255,255])
+    drawTexture(data, textureIndex, x, wallX, upperEdgeWithOverflow, lowerEdgeWithOverflow, wallSide)
+    drawLine(data, {x: x, y: lowerEdge}, {x: x, y: screenHeight-1}, [128, 128, 128,255])
   }
 }
 

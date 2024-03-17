@@ -12,9 +12,5 @@ const drawLine = (point1: pointCoordinates, point2: pointCoordinates, cssColor: 
   canvasContext.stroke();
 }
 
-const initializeTextures = () => {
-  
-}
-
 
 export { degreesToRadians, drawLine }
