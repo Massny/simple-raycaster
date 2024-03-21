@@ -1,45 +1,43 @@
 import IGameData from "./types/IGameData"
+import IPressedKeys from "./types/IKeys"
+
+const pressedKeys: IPressedKeys = {
+  a: false,
+  s: false,
+  w: false,
+  d: false
+}
 
 const initializeMovement = (data : IGameData) => {
-  const {map} = data
-  const moveSpeed = 0.2
-  const rotationSpeed = 0.05
+  data.pressedKeys = pressedKeys
+
+  window.addEventListener('keyup', (e) => {
+    if(e.key.toLowerCase() == 'w'){
+      pressedKeys.w = false
+    }
+    if(e.key.toLowerCase() == 'a'){
+      pressedKeys.a = false
+    }
+    if(e.key.toLowerCase() == 's'){
+      pressedKeys.s = false
+    }
+    if(e.key.toLowerCase() == 'd'){
+      pressedKeys.d = false
+    }
+  })
 
   window.addEventListener('keydown', (e) => {
-    if(e.key == 'w'){
-      if(map[Math.floor(data.position.x+data.direction.x * moveSpeed)][Math.floor(data.position.y)] == 0)
-        data.position.x += data.direction.x * moveSpeed
-      if(map[Math.floor(data.position.x)][Math.floor(data.position.y+data.direction.y* moveSpeed)] == 0)
-        data.position.y += data.direction.y * moveSpeed
-      // console.log(data.position.x, data.position.y)
+    if(e.key.toLowerCase() == 'w'){
+      pressedKeys.w = true
     }
-
-    if(e.key == 's'){
-      if(map[Math.floor(data.position.x-data.direction.x * moveSpeed)][Math.floor(data.position.y)] == 0)
-        data.position.x -= data.direction.x * moveSpeed
-        if(map[Math.floor(data.position.x)][Math.floor(data.position.y-data.direction.y* moveSpeed)] == 0)
-        data.position.y -=  data.direction.y * moveSpeed
-        // console.log(data.position.x, data.position.y)
+    if(e.key.toLowerCase() == 'a'){
+      pressedKeys.a = true
     }
-
-    if(e.key == 'd'){
-      const oldDirection = data.direction.x
-      data.direction.x = data.direction.x * Math.cos(-rotationSpeed) - data.direction.y * Math.sin(-rotationSpeed);
-      data.direction.y = oldDirection * Math.sin(-rotationSpeed) + data.direction.y * Math.cos(-rotationSpeed);
-
-      const oldPlaneX = data.plane.x
-      data.plane.x = data.plane.x * Math.cos(-rotationSpeed) - data.plane.y * Math.sin(-rotationSpeed);
-      data.plane.y = oldPlaneX * Math.sin(-rotationSpeed) + data.plane.y * Math.cos(-rotationSpeed);
+    if(e.key.toLowerCase() == 's'){
+      pressedKeys.s = true
     }
-
-    if(e.key == 'a'){
-      const oldDirection = data.direction.x
-      data.direction.x = data.direction.x * Math.cos(rotationSpeed) - data.direction.y * Math.sin(rotationSpeed);
-      data.direction.y = oldDirection * Math.sin(rotationSpeed) + data.direction.y * Math.cos(rotationSpeed);
-
-      const oldPlaneX = data.plane.x
-      data.plane.x = data.plane.x * Math.cos(rotationSpeed) - data.plane.y * Math.sin(rotationSpeed);
-      data.plane.y = oldPlaneX * Math.sin(rotationSpeed) + data.plane.y * Math.cos(rotationSpeed);
+    if(e.key.toLowerCase() == 'd'){
+      pressedKeys.d = true
     }
 
   })
