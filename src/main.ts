@@ -5,6 +5,7 @@ import rayCaster from './rayCaster';
 import initializeMovement from './InitializeMovement';
 import initializeTextures from './initializeTextures';
 import { initializeBuffer, renderBuffer } from './renderUtils';
+import movementHandler from './movementHandler';
 
 const gameWidth = 640;
 const gameHeight = 480;
@@ -68,7 +69,8 @@ const data = {
   renderData:{
     imageData: null,
     buffer: null,
-  }
+  },
+  pressedKeys: null
 }
 
 const start = async () => {
@@ -80,6 +82,7 @@ const start = async () => {
     data.canvasContext.clearRect(0, 0, data.screenWidth, data.screenHeight);
     rayCaster(data)
     renderBuffer(data)
+    movementHandler(data)
     
   }, data.frameRate)
 }
