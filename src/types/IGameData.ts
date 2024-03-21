@@ -1,4 +1,5 @@
 import textureData from "./ITextureUtils";
+import IPressedKeys from "./IKeys";
 
 interface IGameData{
   screenWidth: number;
@@ -24,7 +25,8 @@ interface IGameData{
   renderData: {
     buffer: null | Uint8ClampedArray
     imageData: null | ImageData
-  }
+  },
+  pressedKeys: null | IPressedKeys;
 }
 
 export default IGameData
