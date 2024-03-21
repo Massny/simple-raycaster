@@ -2,7 +2,7 @@ import IGameData from "./types/IGameData"
 import { drawLine, drawTexture } from "./renderUtils"
 
 const rayCaster = (data: IGameData) => {
-  const {screenWidth, screenHeight, position, direction, plane, map, textures} = data
+  const {screenWidth, screenHeight, position, direction, plane, map} = data
 
   // Iterate through all "vertical stripes" (that is, all pixels of screenWidth)
   for(let x = 0; x <data.screenWidth; x++){
@@ -91,7 +91,6 @@ const rayCaster = (data: IGameData) => {
       }
       
       // Check if ray has hit a wall
-      // console.log(gridPosition)
       if (map[gridPosition.x][gridPosition.y] > 0) 
         foundWall = true;
     }
@@ -99,6 +98,8 @@ const rayCaster = (data: IGameData) => {
     // After the wall is found, the distance to it has to be calculated, to know how high the walls should be
     // In our ipmlementation it is basically taking the already-computed sideDistance and substracting deltaDistance once
     const wallDistance = wallSide == 0 ? (sideDist.x - deltaDist.x) * 1/rayLength : (sideDist.y - deltaDist.y)* 1/rayLength
+
+    
 
     // The longer the distance, the lower the wall should be rendered, therefore we need the inverse of this value to
     // accurately represent wall relative size. We then scale it by the screenHeight, to get its height in pixels and proceed to draw it
