@@ -29,6 +29,7 @@ const textures : textureData[] = [
   }
 ]
 
+// Parse image into ImageData object
 const getTextureData = (image: HTMLImageElement) => {
   const canvas = new OffscreenCanvas(image.naturalWidth, image.naturalHeight)
 
@@ -40,6 +41,7 @@ const getTextureData = (image: HTMLImageElement) => {
 
 }
 
+// Asynchronically load textures
 const initializeTextures = async (data: IGameData) => {
   for(let i in textures){
     const imageElement = document.createElement('img')

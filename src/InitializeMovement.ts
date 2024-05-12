@@ -1,6 +1,8 @@
 import IGameData from "./types/IGameData"
 import IPressedKeys from "./types/IKeys"
 
+
+// Setup eventListeners to accurately detect key pressess using pressedKey property
 const pressedKeys: IPressedKeys = {
   a: false,
   s: false,

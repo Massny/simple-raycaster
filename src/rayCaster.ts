@@ -1,6 +1,10 @@
 import IGameData from "./types/IGameData"
 import { drawLine, drawTexture } from "./renderUtils"
 
+// The raycasting method used below utilises DDA algorithm to determine the distance of the wall from the player
+// and then render the walls with proper height based on this information. The height of wall is inversly proportional
+// to the distance from the player. The entirety of rendering process uses canvas as the display and "map" array as the game map.
+
 const rayCaster = (data: IGameData) => {
   const {screenWidth, screenHeight, position, direction, plane, map} = data
 
@@ -23,8 +27,8 @@ const rayCaster = (data: IGameData) => {
     // Setting up variables needed for DDA algorithm
     // https://www.geeksforgeeks.org/dda-line-generation-algorithm-computer-graphics/ - explanation of algorithm goals
     // https://lodev.org/cgtutor/raycasting.html - explanation of below implementation
-    // https://lodev.org/cgtutor/images/raycasthit.gif - for reference what we are trying to accomplish using DDA algorithm \\
-    // https://lodev.org/cgtutor/images/raycastdelta.gif  - for geometrical reference\\
+    // https://lodev.org/cgtutor/images/raycasthit.gif - for reference what we are trying to accomplish using DDA algorithm 
+    // https://lodev.org/cgtutor/images/raycastdelta.gif  - for geometrical reference
 
     // The current square of the map ray happens to be in (only the square of our grid, not exact position)
     const gridPosition = {
@@ -96,7 +100,7 @@ const rayCaster = (data: IGameData) => {
     }
 
     // After the wall is found, the distance to it has to be calculated, to know how high the walls should be
-    // In our ipmlementation it is basically taking the already-computed sideDistance and substracting deltaDistance once
+    // In our ipmlementation it is taking the already-computed sideDistance and substracting deltaDistance once
     const wallDistance = wallSide == 0 ? (sideDist.x - deltaDist.x) * 1/rayLength : (sideDist.y - deltaDist.y)* 1/rayLength
 
     
@@ -110,22 +114,25 @@ const rayCaster = (data: IGameData) => {
 
     const wallHeight = Math.floor((1/wallDistance)*screenHeight)
     let upperEdge = screenHeight - Math.floor((screenHeight/2 + wallHeight/2))
-    const upperEdgeWithOverflow = upperEdge // For textures
+    const upperEdgeWithOverflow = upperEdge // To be used for accurate texturing
     if(upperEdge < 0)
       upperEdge = 0
     
     let lowerEdge = screenHeight - Math.floor((screenHeight/2 - wallHeight/2))
-    const lowerEdgeWithOverflow = lowerEdge // For textures
+    const lowerEdgeWithOverflow = lowerEdge // To be used for accurate texturing
     if(lowerEdge > screenHeight)
       lowerEdge = screenHeight  
     
       
-    // TEXTURE RENDERING LOGIC
+    // TEXTURE RENDERING
+    // Calculating where exactly the wall was hit (which part of X coordinate)
     let wallX = wallSide == 0 ? position.y + wallDistance * rayDirection.y : position.x + wallDistance * rayDirection.x
     wallX -= Math.floor(wallX)
 
+    // Get the corresponding texture
     const textureIndex = map[gridPosition.x][gridPosition.y] -1
 
+    // Drawing the one-colour sky, textured wall, one-colour floor
     drawLine(data, {x: x, y: 0}, {x: x, y: upperEdge}, [0,0,255,255])
     drawTexture(data, textureIndex, x, wallX, upperEdgeWithOverflow, lowerEdgeWithOverflow, wallSide)
     drawLine(data, {x: x, y: lowerEdge}, {x: x, y: screenHeight-1}, [128, 128, 128,255])

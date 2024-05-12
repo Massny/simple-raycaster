@@ -73,11 +73,13 @@ const data = {
   pressedKeys: null
 }
 
+
 const start = async () => {
   await initializeTextures(data)
   initializeBuffer(data)
   initializeMovement(data)
   
+  // Main loop
   setInterval(() => {
     data.canvasContext.clearRect(0, 0, data.screenWidth, data.screenHeight);
     rayCaster(data)
